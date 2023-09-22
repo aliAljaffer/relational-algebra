@@ -1,6 +1,7 @@
 import os
 import re
 from sys import platform
+from . import parsing as pars
 
 import pandas as pd
 
