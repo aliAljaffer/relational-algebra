@@ -1,11 +1,12 @@
 import os
 import re
 from sys import platform
-from . import parsing as pars
-
+import util.parsing as parsing
 import pandas as pd
 
 os_separator = '\\' if platform == 'win32' else '/'
+
+OPERATIONS = r'(PROJ|SELE|INTE|JOIN)'
 
 
 def txtToDataFrame(file_path: str) -> pd.DataFrame:
@@ -19,12 +20,35 @@ def findAll(df: pd.DataFrame, column: str, value_to_match: any, operation: str):
     return df.loc[df[column] == value_to_match]
 
 
+def process_cond(condition: str):
+    comparisons = ['<=', '>=', '!=', '<',  '>',  '=']
+    comp_used = ''
+    for c in comparisons:
+        comp_used = c if c in condition else ''
+        if comp_used != '':
+            break
+    if comp_used == '':
+        return 0
+    column, compare_to = str(condition.split(comp_used)[0]).strip(), str(
+        condition.split(comp_used)[1]).strip().replace('\'', '').replace('\"', '')
+    print(column)
+    print(comp_used)
+    print(compare_to)
+
+
+process_cond('ANAME = \'JAMES\'')
+exit()
+
+
 def process_query(query: str):
-    query_type = query[0:4]
-    condition = query[6:query[7:].strip().index('}')+1]
+
+    query_type = re.match(r'\(?(PROJ|SELE|INTE|JOIN)', query[0:4]).string
+    condition = query[query.index('{')+1:query.index('}')]
+
+    on_table = query[query.index('(')+1: query.index(')')]
     print('Query type:', query_type)
     print('Query condition:', condition)
-    print()
+    print('Query on table:', on_table)
 
 
 def parse_query(query):
@@ -60,7 +84,7 @@ ACTORS_DF = txtToDataFrame('ACTORS.txt')
 MOVIES_DF = txtToDataFrame('MOVIES.txt')
 PLAY_DF = txtToDataFrame('Play.txt')
 QUERIES = open('RAqueries.txt', 'r')
-
+process_query('SELE_{FUN > 50}(EMPLOYEE)')
 r, a, t = parse_query(
     '(PROJ_{ANO} (SELE_{Payment > 70} (Play))) - (PROJ_{ANO} (SELE_{Payment < 60} (Play)))')
 # print(t)
