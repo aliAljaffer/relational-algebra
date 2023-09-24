@@ -16,3 +16,7 @@ def txtToDataFrame(file_path: str) -> pd.DataFrame:
 ACTORS_DF = txtToDataFrame('ACTORS.txt')
 MOVIES_DF = txtToDataFrame('MOVIES.txt')
 PLAY_DF = txtToDataFrame('Play.txt')
+
+
+def DataFrame_to_csv(df: pd.DataFrame):
+    df.to_csv('..{os_separator}outputs{os_separator}RAoutput.csv')

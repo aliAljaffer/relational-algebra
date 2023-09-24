@@ -14,7 +14,7 @@ OPERATIONS = r'(PROJ|SELE|INTE|JOIN)'  # unused
 def SELE(df: pd.DataFrame, column: str, value_to_match: any, operation: str) -> pd.DataFrame:
     if isinstance(value_to_match, str):
         try:
-            value_to_match = int(value_to_match)
+            value_to_match = eval(value_to_match)
         except ValueError:
             pass
 
